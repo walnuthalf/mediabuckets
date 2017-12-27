@@ -1,7 +1,9 @@
 # Mediabuckets
 This gem can parse a directory recursively, filter identical files (based on SHA2), and then sort all files by their media types, which are determined by MIME types. 
-
 mimemagic gem was used for determining MIME types.
+
+
+Tested on Fedora 25, but should work in most UNIX-like systems.
 
 ## Installation
 
@@ -15,17 +17,14 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install mediabuckets
-
 ## Usage
-Mediabuckets::Action.arrange can symbolically link, copy, or move sorted files.
+Mediabuckets.arrange(source, destination, command) can symbolically link, copy, or move sorted files.
 Use move with caution.
 ```ruby
 require "mediabuckets"
-Mediabuckets::Action.arrange("/home/mk/Downloads", "/home/mk/sorted", "link")
+Mediabuckets.arrange("/home/mk/Downloads", "/home/mk/sorted", "link")
 ```
+Log events are saved in \_\_log\_\_ file in the destination folder in JSON format. 
 
 ## License
 
