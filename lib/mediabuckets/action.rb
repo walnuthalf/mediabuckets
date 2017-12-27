@@ -6,21 +6,6 @@ module Mediabuckets
   module Action
     MAX_FILENAME_LENGTH = 255
 
-    def self.arrange(source, dest, command)
-      sourcename = Pathname.new source
-      destname = Pathname.new dest
-      if not destname.exist?
-        FileUtils.mkdir destname
-      end
-      if not destname.empty?
-        raise "destination directory is not empty"
-      end
-      logpathname = destname.join "__log__"
-      logger = Logger.new(logpathname)
-      self.arrange_p(sourcename, destname, command, logger)
-      :ok
-    end
-
     def self.gen_unique_basename(sourcename, hash, maxFilenameLength=MAX_FILENAME_LENGTH) 
       base = sourcename.basename.to_s
       newbase = if base.length + hash.length <= (maxFilenameLength - 1)
@@ -53,7 +38,7 @@ module Mediabuckets
       end
     end
 
-    def self.arrange_p(sourcename, destname, command, logger)
+    def self.arrange(sourcename, destname, command, logger)
       filenames = Mediabuckets::FileLister.file_list_rec(sourcename)
       bucketToFileInfos = Mediabuckets::Trimmer.gen_buckets(filenames)
 
