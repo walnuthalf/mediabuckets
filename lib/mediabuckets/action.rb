@@ -5,6 +5,7 @@ require "json"
 module Mediabuckets
   module Action
     MAX_FILENAME_LENGTH = 255
+    Buckets = Mediabuckets::Buckets
 
     def self.gen_unique_basename(sourcename, hash, maxFilenameLength=MAX_FILENAME_LENGTH) 
       base = sourcename.basename.to_s
@@ -39,8 +40,7 @@ module Mediabuckets
     end
 
     def self.arrange(sourcename, destname, command, logger)
-      filenames = Mediabuckets::FileLister.file_list_rec(sourcename)
-      bucketToFileInfos = Mediabuckets::Trimmer.gen_buckets(filenames)
+      bucketToFileInfos = Buckets.gen_buckets(sourcename)
 
       bucketToFileInfos.each do |bucket, fileInfos|
         bucketPathname = destname.join bucket

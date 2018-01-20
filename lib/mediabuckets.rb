@@ -1,6 +1,6 @@
 require "mediabuckets/version"
-require "mediabuckets/filelister"
-require "mediabuckets/trimmer"
+require "mediabuckets/fsinfo"
+require "mediabuckets/buckets"
 require "mediabuckets/action"
 
 module Mediabuckets

@@ -1,21 +1,19 @@
-require "digest"
 require "mimemagic"
 require "mimemagic/overlay"
 
 module Mediabuckets
-  module Trimmer 
-    def self.get_filehash(pathname)
-      Digest::SHA256.file(pathname).hexdigest
-    end 
+  module Buckets
+    FSinfo = Mediabuckets::FSinfo
 
-    def self.gen_buckets(pathnames)
-      self.gen_bucketToFileInfos(self.gen_hashToPathnames(pathnames))
+    def self.gen_buckets(dirname)
+      filenames = FSinfo.file_list_rec(dirname)
+      self.gen_bucketToFileInfos(self.gen_hashToPathnames(filenames))
     end
 
     def self.gen_hashToPathnames(pathnames)
       hashToPathnames = Hash.new
       pathnames.each do |pathname|
-        filehash = get_filehash(pathname)
+        filehash = FSinfo.get_filehash(pathname)
         if hashToPathnames.include?(filehash)
           # add to the list
           hashToPathnames[filehash].push(pathname)
