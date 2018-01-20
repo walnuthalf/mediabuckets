@@ -99,12 +99,12 @@ module Mediabuckets
           self.compare_dirs(subdir1, subdir2)
         end
       end
-      dirs = [dir1, dir2]
+      dirTrees = [gen_dir_tree(dir1), gen_dir_tree(dir2)]
       funcArgs = [
-        [same_filelist_length, dirs],
-        [same_files, dirs],
-        [same_subdirs_length, dirs],
-        [same_subdirs, dirs]
+        [same_filelist_length, dirTrees],
+        [same_files, dirTrees],
+        [same_subdirs_length, dirTrees],
+        [same_subdirs, dirTrees]
       ]
       self.apply_till_false(funcArgs)
     end
