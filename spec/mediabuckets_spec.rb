@@ -46,38 +46,60 @@ RSpec.describe Mediabuckets do
     nonsymlinks.empty?
   end
 
+  def check_media_types
+    def in_bucket?(bucket, name)
+      DEST.join(bucket).join(name).exist?
+    end
+    data = [["audio", "audio1.mp3"],
+      ["audio", "audio2.mp3"],
+      ["video", "video1.mp4"],
+      ["application", "document1.pdf"],
+      ["image", "image1.jpg"],
+      ["image", "image2.jpg"],
+      ["image", "image3.jpg"],
+      ["image", "image1.png"],
+      ["image", "image2.png"]]
+    data.each do |d|
+      if not in_bucket?(*d)
+        return false
+      end
+    end
+    true
+  end
+
   it "has a version number" do
     expect(Mediabuckets::VERSION).not_to be nil
   end
 
-  it "tests .arrange with link" do
-    # make test_area
-   setup_test_area 
-   run_arrange("link")
-   # have all files been processed?
-   expect(contents_match?(SAMPLES, DEST)).to be true
-   # is the source directory intact?
-   expect(Mediabuckets::FSinfo.compare_dirs(SAMPLES, SOURCE)).to be true
-  end
+  describe "command tests" do 
+    before(:each) do
+      # make test_area
+      setup_test_area 
+    end
+    after(:each) do
+      # have all files been processed?
+      expect(contents_match?(SAMPLES, DEST)).to be true
+      # files in the right buckets?
+      expect(check_media_types).to be true
+    end
 
-  it "tests .arrange with copy" do
-    # make test_area
-   setup_test_area 
-   run_arrange("copy")
-   # have all files been processed?
-   expect(contents_match?(SAMPLES, DEST)).to be true
-   # is the source directory intact?
-   expect(Mediabuckets::FSinfo.compare_dirs(SAMPLES, SOURCE)).to be true
-  end
+    it "tests .arrange with link" do
+      run_arrange("link")
+      # is the source directory intact?
+      expect(Mediabuckets::FSinfo.compare_dirs(SAMPLES, SOURCE)).to be true
+    end
 
-  it "tests .arrange with move" do
-    # make test_area
-   setup_test_area 
-   run_arrange("move")
-   # have all files been processed?
-   expect(contents_match?(SAMPLES, DEST)).to be true
-   # is the source directory empty of files?
-   filesInSource = Mediabuckets::FSinfo.file_list_rec(SOURCE)
-   expect(filesInSource).to match_array([])
+    it "tests .arrange with copy" do
+      run_arrange("copy")
+      # is the source directory intact?
+      expect(Mediabuckets::FSinfo.compare_dirs(SAMPLES, SOURCE)).to be true
+    end
+
+    it "tests .arrange with move" do
+      run_arrange("move")
+      # is the source directory empty of files?
+      filesInSource = Mediabuckets::FSinfo.file_list_rec(SOURCE)
+      expect(filesInSource).to match_array([])
+    end
   end
 end
